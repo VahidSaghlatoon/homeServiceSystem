@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head th:replace="fragments :: page_head('سیستم خدمات منزل')"></head>
+
+<body th:dir="rtl">
+<div class="container-fluid">
+    <div th:replace="navigation :: menu "></div>
+
+    <div class="text-center">
+        <h2>پنل مدیریت سیستم خدمات منزل</h2>
+        <a class="nav-link " sec:authentication="principal.fullName "></a>
+        &nbsp;
+        <span sec:authentication="principal.authorities"></span>
+    </div>
+
+</div>
+</body>
+</html>
