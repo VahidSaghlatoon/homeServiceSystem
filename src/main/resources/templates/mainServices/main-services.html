@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('خدمت ها')">
+</head>
+<body th:dir="rtl">
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+    <a th:href="@{/mainServices/showFormForAdd}" class="btn btn-primary btn-sm m-3">
+        افزودن خدمت
+    </a>
+    <div>
+        <form th:action="@{/mainServices/page/1}" class="form-check-inline m-3">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+            <input type="search" name="keyword" th:value="${keyword}" class="form-control col-2 mb-2" required>
+            &nbsp;&nbsp;
+            <input type="submit" value="جستجو" class=" btn btn-primary ">
+            &nbsp;&nbsp;
+            <a th:href="@{/mainServices}" class="btn btn-secondary col-4">
+                انصراف
+            </a>
+        </form>
+    </div>
+
+    <div th:if="${ message != null }" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th th:replace="fragments :: column_link('title' , 'عنوان','mainServices')"></th>
+            <th th:replace="fragments :: column_link('description' , 'توضیحات','mainServices')"></th>
+            <th th:replace="fragments :: column_link('enabled' , 'وضعیت','mainServices')"></th>
+            <th>عملیات</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="mainService : ${ theMainServices }">
+
+            <td class="col-3" th:text="${mainService.title}"></td>
+            <td class="col-5" th:text="${mainService.description}"></td>
+            <td class="col-1">
+                <a th:if="${mainService.enabled == true}"
+                   class="fas fa-check-circle fa-2x icon-green text-center "
+                   th:href="@{'/mainServices/' + ${mainService.id}+ '/enabled/false' }"
+                   title="غیرفعال کردن "
+                   style="text-decoration: none"
+                ></a>
+                <a th:if="${mainService.enabled != true}" class="fas fa-circle fa-2x icon-dark text-center"
+                   th:href="@{'/mainServices/' + ${mainService.id} + '/enabled/true' }"
+                   title="فعال کردن "
+                   style="text-decoration: none"
+                ></a>
+            </td>
+            <td class="col-3">
+                <a th:href="@{/mainServices/showFormForUpdate(mainServiceId=${mainService.id})}"
+                   class="fas fa-edit fa-2x icon-green text-decoration-none "></a>
+                &nbsp;
+                <a th:href="@{/mainServices/delete(mainServiceId=${mainService.id})}"
+                   class="fas fa-trash fa-2x icon-red text-decoration-none "
+                   onclick="if(!(confirm('مطمئنید میخواهید حذف نمایید ؟')))  return false">
+                </a>
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+
+    <div class="text-center m-1" th:if="${totalItem>0}">
+        <span>نمایش خدمت ها # [[${startCount}]] تا [[${endCount}]] از [[${totalItem}]]</span>
+    </div>
+    <div class="text-center m-1" th:unless="${totalItem>0}">
+        <span> هیچ موردی یافت نشد</span>
+    </div>
+
+    <div th:if="${totalItem > 1}">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li th:class="${currentPage>1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(1,'صفحه اول','mainServices')"></a>
+                </li>
+                <li th:class="${currentPage>1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${currentPage - 1},'صفحه قبل','mainServices')"></a>
+                </li>
+                <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+                    th:each="i : ${#numbers.sequence(1,totalPages)}">
+                    <a th:replace="fragments :: page_link(${i},${i},'mainServices')"></a>
+                </li>
+
+                <li th:class="${currentPage<totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${currentPage+1},'صفحه بعد','mainServices')"></a>
+                </li>
+                <li th:class="${currentPage<totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${totalPages},'صفحه آخر',,'mainServices')"></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+<script type="text/javascript">
+
+</script>
+
+</body>
+</html>

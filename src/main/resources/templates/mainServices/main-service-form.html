@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('افزودن یا ویرایش خدمت')">
+
+</head>
+<body th:dir="rtl">
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+    <div class=" d-flex align-items-center justify-content-center  ">
+        <form action="#" th:action="@{/mainServices/save}"
+              th:object="${theMainService}"
+              method="post"
+              class=" col-4 m-4 border border-primary p-4">
+            <input type="hidden" name="_csrf" value="cf71baa1-2c3e-4628-84d7-7e37a7b76d61"/>
+            <input type="hidden" th:field="*{id}">
+            <input type="text" th:field="*{title}" placeholder="عنوان"
+                   required=""
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+            <ul>
+                <li th:each="err : ${#fields.errors('title')}" th:text="${err}" class="text-danger"></li>
+            </ul>
+            <input type="text" th:field="*{description}" placeholder="توضیحات"
+                   required=""
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+            <ul>
+                <li th:each="err : ${#fields.errors('description')}" th:text="${err}" class="text-danger"></li>
+            </ul>
+
+            <select class="form-control mb-4" th:field="*{mainService}">
+                <option value="0">انتخاب خدمت</option>
+                <th:block th:each=" temp : ${mainServiceList}">
+                        <option th:value="${temp.id}">[[${temp.title}]]</option>
+                </th:block>
+            </select>
+
+
+            <ul>
+                <lable> وضعیت(فعال/غیرفعال)</lable>
+                <input type="checkbox" th:field="*{enabled}">
+            </ul>
+
+            <button type="submit" class="btn btn-info col-4">ذخیره</button>
+            <a th:href="@{/mainServices}" class="btn btn-secondary col-4">
+                انصراف
+            </a>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+
+</script>
+<script th:src="@{/js/common-form.js}"></script>
+</body>
+</html>

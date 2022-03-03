@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('کارمندان')">
+</head>
+<body th:dir="rtl">
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+    <a th:href="@{/employees/showFormForAdd}" class="btn btn-primary btn-sm m-3">
+        افزودن کارمند
+    </a>
+    <div>
+        <form th:action="@{/employees/page/1}" class="form-check-inline m-3">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+            <input type="search" name="keyword" th:value="${keyword}" class="form-control col-2 mb-2" required>
+            &nbsp;&nbsp;
+            <input type="submit" value="جستجو" class=" btn btn-primary ">
+            &nbsp;&nbsp;
+            <a th:href="@{/employees}" class="btn btn-secondary col-4">
+                انصراف
+            </a>
+        </form>
+    </div>
+
+    <div th:if="${ message != null }" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>تصویر</th>
+            <th th:replace="fragments :: column_link('firstName' , 'نام','employees')"></th>
+            <th th:replace="fragments :: column_link('lastName' , 'نام خانوادگی','employees')"></th>
+            <th th:replace="fragments :: column_link('email' , 'ایمیل','employees')"></th>
+            <th th:replace="fragments :: column_link('enabled' , 'وضعیت','employees')"></th>
+            <th>نقش ها</th>
+            <th>عملیات</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="employee : ${ theEmployees }">
+            <td>
+                <span th:if="${employee.photo == null}" class="fas fa-portrait fa-6x icon-dark"></span>
+                <img th:if="${employee.photo!=null}" th:src="@{${employee.photosImagePath}}"
+                     style="width: 100px;"
+                     alt="تصویر">
+            </td>
+            <td class="col-2" th:text="${employee.firstName}"></td>
+            <td class="col-2" th:text="${employee.lastName}"></td>
+            <td class="col-3" th:text="${employee.email}"></td>
+            <td class="col-1">
+                <a th:if="${employee.enabled == true}"
+                   class="fas fa-check-circle fa-2x icon-green text-center "
+                   th:href="@{'/employees/' + ${employee.id}+ '/enabled/false' }"
+                   title="غیرفعال کردن "
+                   style="text-decoration: none"
+                ></a>
+                <a th:if="${employee.enabled != true}" class="fas fa-circle fa-2x icon-dark text-center"
+                   th:href="@{'/employees/' + ${employee.id} + '/enabled/true' }"
+                   title="فعال کردن "
+                   style="text-decoration: none"
+                ></a>
+            </td>
+            <td class="col-2" th:text="${employee.roles }"></td>
+            <td class="col-2">
+                <a th:href="@{/employees/showFormForUpdate(employeeId=${employee.id})}"
+                   class="fas fa-edit fa-2x icon-green text-decoration-none "></a>
+                &nbsp;
+                <a th:href="@{/employees/delete(employeeId=${employee.id})}"
+                   class="fas fa-trash fa-2x icon-red text-decoration-none "
+                   onclick="if(!(confirm('مطمئنید میخواهید حذف نمایید ؟')))  return false">
+                </a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+    <div class="text-center m-1" th:if="${totalItem>0}">
+        <span>نمایش کارمندان # [[${startCount}]] تا [[${endCount}]] از [[${totalItem}]]</span>
+    </div>
+    <div class="text-center m-1" th:unless="${totalItem>0}">
+        <span>کارمندی وجود ندارد</span>
+    </div>
+
+    <div th:if="${totalItem > 1}">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li th:class="${currentPage>1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(1,'صفحه اول','employees')"></a>
+                </li>
+                <li th:class="${currentPage>1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${currentPage - 1},'صفحه قبل','employees')"></a>
+                </li>
+                <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+                    th:each="i : ${#numbers.sequence(1,totalPages)}">
+                    <a th:replace="fragments :: page_link(${i},${i},'employees')"></a>
+                </li>
+
+                <li th:class="${currentPage<totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${currentPage+1},'صفحه بعد','employees')"></a>
+                </li>
+                <li th:class="${currentPage<totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${totalPages},'صفحه آخر','employees')"></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+<script type="text/javascript">
+
+</script>
+
+</body>
+</html>

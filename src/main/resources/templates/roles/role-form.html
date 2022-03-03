@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('کارمندان')">
+<body th:dir="rtl">
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+    <div class=" d-flex align-items-center justify-content-center  ">
+        <form action="#" th:action="@{/roles/save}" th:object="${role}"
+              method="post" class=" col-4 m-4 border border-primary p-4">
+            <input type="hidden" th:field="*{id}">
+            <input type="text" th:field="*{title}" placeholder="عنوان نقش"
+                   required=""
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+            <ul>
+                <li th:each="err : ${#fields.errors('title')}" th:text="${err}" class="text-danger"></li>
+            </ul>
+            <input type="text" th:field="*{description}" placeholder="توضیخ نقش"
+                   required=""
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+            <ul>
+                <li th:each="err : ${#fields.errors('description')}" th:text="${err}" class="text-danger"></li>
+            </ul>
+            <button type="submit" class="btn btn-info col-4">ذخیره</button>
+            <a th:href="@{/roles}" class="btn btn-secondary col-4">
+                انصراف
+            </a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

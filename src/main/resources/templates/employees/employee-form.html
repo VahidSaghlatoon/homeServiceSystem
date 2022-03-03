@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('افزودن یا ویرایش کارمند')">
+
+</head>
+<body th:dir="rtl">
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+
+    <div class=" d-flex align-items-center justify-content-center  ">
+        <form action="#" th:action="@{/employees/save}"
+              th:object="${employee}"
+              method="post"
+              class=" col-4 m-4 border border-primary p-4"
+              onsubmit="return checkEmailUnique(this);"
+              enctype="multipart/form-data"
+        >
+            <input type="hidden" name="_csrf" value="cf71baa1-2c3e-4628-84d7-7e37a7b76d61"/>
+            <input type="hidden" th:field="*{id}">
+            <input type="text" th:field="*{firstName}" placeholder="نام"
+                   required=""
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+            <ul>
+                <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="text-danger"></li>
+            </ul>
+            <input type="text" th:field="*{lastName}" placeholder="نام خانوادگی"
+                   required=""
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+            <ul>
+                <li th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="text-danger"></li>
+            </ul>
+
+            <input type="email" th:field="*{email}" placeholder="ایمیل"
+                   required=""
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+            <ul>
+                <li th:each="err : ${#fields.errors('email')}" th:text="${err}" class="text-danger"></li>
+            </ul>
+
+            <input type="password" th:if="${employee.id == null}" th:field="*{password}" placeholder="کلمه عبور"
+                   minlength="8"
+                   required=""
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است و حداقل شامل 8 کاراکتر ترکیبی از اعداد و حروف')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+
+            <input type="password" th:if="${employee.id != null}" th:field="*{password}" placeholder="کلمه عبور"
+                   minlength="8"
+                   oninvalid="this.setCustomValidity('پر کردن این این فیلد الزامی است و حداقل شامل 8 کاراکتر ترکیبی از اعداد و حروف')"
+                   oninput="setCustomValidity('')"
+                   class="form-control mb-4 col-6">
+
+            <ul>
+                <li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="text-danger"></li>
+            </ul>
+
+            <ul>
+                <lable> وضعیت(فعال/غیرفعال)</lable>
+                <input type="checkbox" th:field="*{enabled}">
+            </ul>
+
+            <ul>
+                <li style="list-style-type: none">
+                    <th:block th:each="role : ${theRoles}">
+                        <input type="checkbox" th:field="*{roles}"
+                               th:text="${role.title}"
+                               th:value="${role.id}"
+                               class="m-2"
+                        >
+                        <!--                        - <span>[[${role.description}]]</span>-->
+                        <br>
+                    </th:block>
+                </li>
+            </ul>
+            <div class="mb-2">
+                <input type="hidden" th:field="*{photo}">
+                <input type="file" id="fileImage" name="image" accept="image/png , image/jpeg">
+                <img th:src="@{${employee.photosImagePath}}" id="thumbnail" alt="photo"
+                     style="width: 100px ;">
+            </div>
+
+
+            <button type="submit" class="btn btn-info col-4">ذخیره</button>
+            <a th:href="@{/employees}" class="btn btn-secondary col-4">
+                انصراف
+            </a>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function checkEmailUnique(form) {
+        const url = "[[@{/employees/check_email}]]";
+        const employeeEmail = $("#email").val();
+        const employeeId = $("#id").val();
+        const csrfValue = $("input[name = '_csrf']").val();
+        const params = {id: employeeId, email: employeeEmail, _csrf: csrfValue};
+        $.post(url, params, function (response) {
+            if (response === "Ok") {
+                form.submit();
+            } else if (response === "Duplicate") {
+                alert("ایمیل وارد شده توسط شخص دیگری ثبت شده است " + employeeEmail);
+            } else {
+                alert("صحت ایمیل را بررسی کنید")
+            }
+        }).fail(function () {
+            alert("عدم ارتباط با سرور ")
+        });
+        return false;
+    }
+</script>
+<script th:src="@{/js/common-form.js}"> </script>
+</body>
+</html>

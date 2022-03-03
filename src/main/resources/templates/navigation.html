@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+
+</head>
+<body>
+<div th:fragment="menu">
+    <form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
+        <input type="submit">
+    </form>
+    <div >
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/images/homeServiceLogo.png}" style="width:50px ; height:50px" alt="homeServiceLogo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="topNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item" sec:authorize="hasAuthority('مدیر')">
+                        <a class="nav-link " th:href="@{/mainServices}">خدمات اصلی</a>
+                    </li>
+                    <th:block sec:authorize="hasAnyAuthority('مدیر','متخصص')">
+                    <li class="nav-item">
+                        <a class="nav-link " th:href="@{/roles}">وظیفه یا نقش ها</a>
+                    </li>
+                    </th:block>
+                    <th:block sec:authorize="hasAnyAuthority('مدیر','متخصص')">
+                    <li class="nav-item">
+                        <a class="nav-link " th:href="@{/employees}">کارمندان</a>
+                    </li>
+                    </th:block>
+                    <th:block sec:authorize="hasAuthority('مدیر')">
+                    <li class="nav-item">
+                        <a class="nav-link " th:href="@{/customers}">مشتریان</a>
+                    </li>
+                    </th:block>
+                    <th:block sec:authorize="hasAnyAuthority('مدیر' ,'مشتری')">
+                    <li class="nav-item">
+                        <a class="nav-link " th:href="@{/orders}">سفارشات</a>
+                    </li>
+                    </th:block>
+
+                    <li>
+                        <span class="fas fa-user fa-2x icon-green text-white"></span>
+                    </li>
+                    <li>
+                        <a class="nav-link " th:href="@{/account}"
+                           sec:authentication="principal.fullName "></a>
+                    </li>
+                    <li>
+                        <a class="btn btn-info  " id="logoutLink" href="">خروج</a>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+
+    </div>
+</div>
+
+</body>
+</html>
